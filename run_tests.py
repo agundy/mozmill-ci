@@ -36,6 +36,7 @@ else:
 
 print "Starting Jenkins"
 subprocess.Popen(['./start.py', '>', 'jenkins.out'])
+
 time.sleep(30)
 
 if os.path.exists(DIR_TEST_ENV):
@@ -58,5 +59,8 @@ subprocess.call([virtualenv_path+'python','test/configuration/save_config.py'])
 
 
 print "Killing Jenkins"
-pid = int(subprocess.check_output(['lsof','-i:8080','-t']))
-os.kill(pid, signal.SIGQUIT)
+pids = subprocess.check_output(['lsof','-i:8080','-t'])
+pids = pids.strip().split('\n')
+
+for pid in pids:
+    os.kill(int(pid), signal.SIGKILL)
