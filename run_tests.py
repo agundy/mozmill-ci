@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import os
 import signal
 import subprocess
@@ -37,7 +41,7 @@ else:
 print "Starting Jenkins"
 subprocess.Popen(['./start.py', '>', 'jenkins.out'])
 
-time.sleep(30)
+time.sleep(60)
 
 if os.path.exists(DIR_TEST_ENV):
     print "Using virtual environment in ", DIR_TEST_ENV
