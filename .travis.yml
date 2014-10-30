@@ -1,6 +1,6 @@
 language: python
 python: 2.7
-script: ./run_tests.sh
+script: ./run_tests.py
 notifications:
   email:
     - dev-automation@lists.mozilla.org
