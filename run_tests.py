@@ -12,6 +12,7 @@ import time
 import pip
 import urllib2
 import tarfile
+import shutil
 
 
 DIR_TEST_ENV = "test/env"
@@ -33,7 +34,7 @@ def pip(*args):
 
 def download(url, destination):
     response = urllib2.urlopen(url)
-    with open(tar_filename, "wb") as code:
+    with open(destination, "wb") as code:
         code.write(response.read())
 
 
@@ -63,6 +64,7 @@ def run_tests():
                 user_input = raw_input("Would you like to recreate it? ")
                 if user_input[0].lower() == "y":
                     print "Running setup:"
+                    shutil.rmtree(DIR_JENKINS_ENV, True)
                     check_call(["./setup.sh", DIR_JENKINS_ENV])
                     break
                 elif user_input[0].lower() == "n":
@@ -99,6 +101,7 @@ def run_tests():
     except:
         print "Could not activate virtual environment"
         print "Exiting"
+        kill_jenkins()
         sys.exit(1)
 
     kill_jenkins()
