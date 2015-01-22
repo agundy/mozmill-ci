@@ -39,9 +39,7 @@ def download(url, destination):
 
 
 def kill_jenkins():
-    '''
-     Kill all Jenkins processes
-    '''
+    """Kill all Jenkins processes"""
     print "Killing Jenkins"
     pids = check_output(['lsof', '-i:8080', '-t'])
     pids = pids.strip().split('\n')
@@ -51,14 +49,12 @@ def kill_jenkins():
 
 
 def run_tests():
-    '''
-    Main Function that handles all the tests.
-    '''
+    """Main Function that handles all the tests."""
     try:
         print "Checking Patches"
         check_call('./test/check_patches.sh')
 
-        if os.path.exists("./" + DIR_JENKINS_ENV) and os.environ.get('CI') == None:
+        if os.path.exists("./" + DIR_JENKINS_ENV) and not os.environ.get('CI'):
             print "Jenkins environment already exists!"
             while True:
                 user_input = raw_input("Would you like to recreate it? ")
@@ -83,11 +79,10 @@ def run_tests():
         if os.path.exists(DIR_TEST_ENV):
             print "Using virtual environment in ", DIR_TEST_ENV
         else:
-            tar_filename = "virtualenv-" + VERSION_VIRTUALENV + ".tar.gz"
-            print "Creating a virtual environment (version %s) in %s" %  (VERSION_VIRTUALENV, DIR_TEST_ENV)
-            url = "https://pypi.python.org/packages/source/v/virtualenv/virtualenv-" + \
-                VERSION_VIRTUALENV + ".tar.gz"
-            destination = download(url, tar_filename)
+            tar_filename = 'virtualenv-%s.tar.gz' %VERSION_VIRTUALENV
+            print 'Creating a virtual environment (version %s) in %s' % (VERSION_VIRTUALENV, DIR_TEST_ENV)
+            url = 'https://pypi.python.org/packages/source/v/virtualenv/%s' %tar_filename
+            download(url, tar_filename)
 
             tar = tarfile.open(name=tar_filename)
             tar.extractall(path='.')
@@ -98,6 +93,7 @@ def run_tests():
 
         python('test/configuration/save_config.py')
 
+        check_call(['git', '--no-pager', 'diff', '--exit-code'])
     except:
         print "Could not activate virtual environment"
         print "Exiting"
