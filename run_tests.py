@@ -87,7 +87,18 @@ def run_tests():
             tar = tarfile.open(name=tar_filename)
             tar.extractall(path='.')
             check_call(
-                ["virtualenv-" + VERSION_VIRTUALENV + "/virtualenv.py", DIR_TEST_ENV])
+                ["virtualenv-%s/virtualenv.py" %VERSION_VIRTUALENV , DIR_TEST_ENV])
+
+        print 'Activating virtual environment'
+        # Assumes Linux Platform
+        activate_this_file = os.path.join(DIR_TEST_ENV, 'bin',
+                                                    'activate_this.py')
+        if not os.path.isfile(activate_this_file):
+            # create venv
+            check_call(['virtualenv', '--no-site-packages', DIR_ENV])
+
+        execfile(activate_this_file, dict(__file__=activate_this_file))
+        print "Virtual environment activated successfully."
 
         pip('install', 'selenium')
 
@@ -99,7 +110,7 @@ def run_tests():
         print "Exiting"
         kill_jenkins()
         sys.exit(1)
-
+    time.sleep(60)
     kill_jenkins()
 
 if __name__ == '__main__':
